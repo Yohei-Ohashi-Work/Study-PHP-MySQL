@@ -18,6 +18,7 @@ $blogData = getAllBlog();
 
 <body>
   <h2>ブログ一覧</h2>
+  <p><a href="./form.html">新規作成</a></p>
   <table>
     <tr>
       <th>No</th>
