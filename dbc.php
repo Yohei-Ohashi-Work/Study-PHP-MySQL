@@ -1,16 +1,4 @@
 <?php
-// 詳細画面を表示する流れ
-// ①　一覧画面からブログのidを送る
-// GETリクエストでidをURLにつけて送る
-
-// ② 詳細ページでidを受け取る
-// PHPの$_GETでidを取得
-
-// ③　idをもとにデータベースから記事を取得
-// SELECT文でプレースホルダーを使う
-
-// ④　詳細ページに表示する
-// HTMLにPHPを埋め込んで表示
 
 // 1. データベース接続
 // 引数： なし
@@ -49,9 +37,6 @@ function getAllBlog()
     $dbh = null;
 }
 
-// 取得したデータを表示
-$blogData = getAllBlog();
-
 // 3. カテゴリ名を表示する
 // 引数： 数字
 // 返り値： カテゴリーの文字列
@@ -66,34 +51,27 @@ function setCategoryName($category)
     }
 }
 
-?>
+// 引数： $id
+// 返り値： $result
+function getBlog($id)
+{
+    if (empty($id)) {
+        exit('IDが不正です。');
+    }
 
-<!DOCTYPE html>
-<html lang="ja">
+    $dbh = dbConnect();
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
+    // SQL準備
+    $stmt = $dbh->prepare('SELECT * FROM blog WHERE id = :id');
+    $stmt->bindValue(':id', (int)$id, PDO::PARAM_INT);
+    // SQL実行
+    $stmt->execute();
+    // 結果を取得
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-<body>
-    <h2>ブログ一覧</h2>
-    <table>
-        <tr>
-            <th>No</th>
-            <th>タイトル</th>
-            <th>カテゴリ</th>
-        </tr>
-        <?php foreach ($blogData as $column): ?>
-            <tr>
-                <td><?php echo $column['id'] ?></td>
-                <td><?php echo $column['title'] ?></td>
-                <td><?php echo setCategoryName($column['category']) ?></td>
-                <td><a href="./detail.php?id=<?php echo $column['id'] ?>">詳細</a></td>
-            </tr>
-        <?php endforeach; ?>
-    </table>
-</body>
+    if (!$result) {
+        exit('ブログがありません。');
+    }
 
-</html>
+    return $result;
+}
