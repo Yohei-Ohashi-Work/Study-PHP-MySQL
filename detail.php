@@ -1,9 +1,9 @@
 <?php
 
-// ①require_onceを使ってみよう！
+require_once('./common.php');
 require_once('./blog.php');
-// ②namespaceを設定しよう！
-// ③useを使おう！
+
+$com = new Common();
 $blog = new Blog();
 $result = $blog->getById($_GET['id']);
 
@@ -20,11 +20,12 @@ $result = $blog->getById($_GET['id']);
 
 <body>
     <h2>ブログ詳細</h2>
-    <h3>タイトル： <?php echo $result["title"] ?></h3>
-    <p>投稿日時： <?php echo $result["post_at"] ?></p>
-    <p>カテゴリ： <?php echo $blog->setCategoryName($result["category"]) ?></p>
+    <h3>タイトル： <?php echo $com->h($result["title"]) ?></h3>
+    <p>投稿日時： <?php echo $com->h($result["post_at"]) ?></p>
+    <p>カテゴリ： <?php echo $com->h($blog->setCategoryName($result["category"])) ?></p>
     <hr>
-    <p>コンテンツ： <?php echo $result["content"] ?></p>
+    <p>本文： <?php echo $com->h($result["content"]) ?></p>
+    <p><a href="./">戻る</a></p>
 </body>
 
 </html>

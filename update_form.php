@@ -1,7 +1,9 @@
 <?php
 
+require_once('./common.php');
 require_once('./blog.php');
 
+$com = new Common();
 $blog = new Blog();
 $result = $blog->getById($_GET['id']);
 
@@ -26,11 +28,11 @@ $publish_status = (int)$result['publish_status'];
 <body>
     <h2>ブログ編集フォーム</h2>
     <form action="blog_update.php" method="POST">
-        <input type="hidden" name="id" value="<?php echo $id ?>">
+        <input type="hidden" name="id" value="<?php echo $com->h($id) ?>">
         <p>ブログタイトル：</p>
-        <input type="text" name="title" value="<?php echo $title ?>" />
+        <input type="text" name="title" value="<?php echo $com->h($title) ?>" />
         <p>ブログ本文：</p>
-        <textarea name="content" id="content" cols="30" rows="10"><?php echo $content ?></textarea>
+        <textarea name="content" id="content" cols="30" rows="10"><?php echo $com->h($content) ?></textarea>
         <br />
         <p>カテゴリ：</p>
         <select name="category">
@@ -43,6 +45,7 @@ $publish_status = (int)$result['publish_status'];
         <br />
         <input type="submit" value="更新" />
     </form>
+    <p><a href="./">戻る</a></p>
 </body>
 
 </html>

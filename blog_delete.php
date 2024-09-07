@@ -1,12 +1,11 @@
 <?php
 
+require_once('./common.php');
 require_once('./blog.php');
 
-$blogs = $_POST;
-
+$com = new Common();
 $blog = new Blog();
-$blog->blogValidate($blogs);
-$blog->blogUpdate($blogs);
+$result = $blog->delete($_GET['id']);
 
 ?>
 
