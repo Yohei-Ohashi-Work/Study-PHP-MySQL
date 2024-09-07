@@ -1,9 +1,16 @@
 <?php
+// 詳細画面を表示する流れ
+// ①　一覧画面からブログのidを送る
+// GETリクエストでidをURLにつけて送る
 
-// 関数一つに一つの機能のみを持たせる
-// 1. データベース接続
-// 2. データを取得する
-// 3. カテゴリ名を表示する
+// ② 詳細ページでidを受け取る
+// PHPの$_GETでidを取得
+
+// ③　idをもとにデータベースから記事を取得
+// SELECT文でプレースホルダーを使う
+
+// ④　詳細ページに表示する
+// HTMLにPHPを埋め込んで表示
 
 // 1. データベース接続
 // 引数： なし
@@ -83,6 +90,7 @@ function setCategoryName($category)
                 <td><?php echo $column['id'] ?></td>
                 <td><?php echo $column['title'] ?></td>
                 <td><?php echo setCategoryName($column['category']) ?></td>
+                <td><a href="./detail.php?id=<?php echo $column['id'] ?>">詳細</a></td>
             </tr>
         <?php endforeach; ?>
     </table>
