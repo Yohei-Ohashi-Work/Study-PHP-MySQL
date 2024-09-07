@@ -2,10 +2,12 @@
 
 class Dbc
 {
+    protected $table_name;
+
     // 1. データベース接続
     // 引数： なし
     // 返り値： 接続結果を返す
-    function dbConnect()
+    protected function dbConnect()
     {
         $dsn = 'mysql:host=localhost;dbname=study_blog_app;charset=utf8';
         $user = 'blog_user';
@@ -26,11 +28,11 @@ class Dbc
     // 2. データを取得する
     // 引数： なし
     // 返り値： 取得したデータ
-    function getAllBlog()
+    public function getAll()
     {
         $dbh = $this->dbConnect();
         // ①SQL文の準備
-        $sql = 'SELECT * FROM blog';
+        $sql = "SELECT * FROM $this->table_name";
         // ②SQLの実行
         $stmt = $dbh->query($sql);
         // ③SQLの結果を受け取る
@@ -39,23 +41,9 @@ class Dbc
         $dbh = null;
     }
 
-    // 3. カテゴリ名を表示する
-    // 引数： 数字
-    // 返り値： カテゴリーの文字列
-    function setCategoryName($category)
-    {
-        if ($category === '1') {
-            return '日常';
-        } elseif ($category === '2') {
-            return 'プログラミング';
-        } else {
-            return 'その他';
-        }
-    }
-
     // 引数： $id
     // 返り値： $result
-    function getBlog($id)
+    public function getById($id)
     {
         if (empty($id)) {
             exit('IDが不正です。');
@@ -64,7 +52,7 @@ class Dbc
         $dbh = $this->dbConnect();
 
         // SQL準備
-        $stmt = $dbh->prepare('SELECT * FROM blog WHERE id = :id');
+        $stmt = $dbh->prepare("SELECT * FROM $this->table_name WHERE id = :id");
         $stmt->bindValue(':id', (int)$id, PDO::PARAM_INT);
         // SQL実行
         $stmt->execute();
@@ -76,31 +64,5 @@ class Dbc
         }
 
         return $result;
-    }
-
-    // 引数： $blogs
-    // 返り値： $result
-    function blogCreate($blogs)
-    {
-        $sql = 'INSERT INTO
-                blog(title, content, category, publish_status)
-            VALUES
-                (:title, :content, :category, :publish_status)';
-
-        $dbh = $this->dbConnect();
-        $dbh->beginTransaction();
-        try {
-            $stmt = $dbh->prepare($sql);
-            $stmt->bindValue(':title', $blogs['title'], PDO::PARAM_STR);
-            $stmt->bindValue(':content', $blogs['content'], PDO::PARAM_STR);
-            $stmt->bindValue(':category', $blogs['category'], PDO::PARAM_INT);
-            $stmt->bindValue(':publish_status', $blogs['publish_status'], PDO::PARAM_INT);
-            $stmt->execute();
-            $dbh->commit();
-            echo 'ブログを投稿しました！';
-        } catch (PDOException $e) {
-            $dbh->rollBack();
-            exit($e);
-        }
     }
 }
